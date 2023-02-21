@@ -10,10 +10,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="https://chat-app-9pd5.onrender.com/Register" element={<Register />} />
-        <Route path="https://chat-app-9pd5.onrender.com/Login" element={<Login />} />
-        <Route path="https://chat-app-9pd5.onrender.com/SetAvatar" element={<SetAvatar />} />
-        <Route path="https://chat-app-9pd5.onrender.com/" element={<Chat />} />
+        <Route path="/Register" element={<Register />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/SetAvatar" element={<SetAvatar />} />
+        <Route path="/" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   );     
