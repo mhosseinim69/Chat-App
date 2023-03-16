@@ -6,7 +6,6 @@ import Logout from "./Logout";
 import axios from "axios";
 import { getAllMessagesRoute, sendMessageRoute } from "../utils/APIRoutes";
 import {v4 as uuidv4} from "uuid";
-import { AiFillCheckCircle } from "react-icons/ai";
 
 
 export default function ChatContainer ({ currentChat, currentUser, socket }) {
@@ -76,9 +75,6 @@ export default function ChatContainer ({ currentChat, currentUser, socket }) {
                                 </div>
                                 <div className="username">
                                     <h3>{currentChat.username}</h3>
-                                </div>
-                                <div className="online-icon">
-                                    <AiFillCheckCircle />
                                 </div>
                             </div>
                             <Logout />
