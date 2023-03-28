@@ -44,14 +44,16 @@ export default function ChatContainer ({ currentChat, currentUser, socket }) {
 
     useEffect(() => {
         if(socket.current) {
-            socket.current.on("msg-recieve",(msg)=> {
-                setArrivalMessage({ fromSelf: false, message:msg });
+            socket.current.on("msg-recieve",(data)=> {
+                setArrivalMessage({ fromSelf: false, message:data.message, from: data.from });
             });
         }
-    },[]);
+    },[currentChat]);
 
     useEffect(() => {
-        arrivalMessage && setMessages((prev)=> [...prev, arrivalMessage]);
+        if (arrivalMessage && currentChat._id === arrivalMessage.from) {
+             setMessages((prev)=> [...prev, arrivalMessage]);
+        }
     },[arrivalMessage]);
 
     useEffect(() => {
@@ -78,9 +80,9 @@ export default function ChatContainer ({ currentChat, currentUser, socket }) {
                             <Logout />
                         </div>
                         <div className="chat-messages">
-                            {messages.map((message, uuidv4) => {
+                            {messages.map((message) => {
                                     return (
-                                        <div ref={scrollRef} key={uuidv4}>
+                                        <div ref={scrollRef} key={uuidv4()}>
                                             <div className={`message ${message.fromSelf ? "sended":"recieved"}`}>
                                                 <div className="content">
                                                     <p>
