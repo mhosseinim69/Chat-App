@@ -15,6 +15,7 @@ function Chat() {
   const [currentUser, setCurrentUser] = useState(undefined);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [isLoaded, setisLoaded] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
     async function fetchData () {
@@ -34,6 +35,34 @@ function Chat() {
       socket.current.emit("add-user", currentUser._id);
     }
   },[currentUser])
+
+  useEffect(() => {
+    if(currentUser) {
+      socket.current.emit("send-status", {
+        id: currentUser._id,
+        online: true,
+    });
+    }
+  },[currentUser]);
+
+  useEffect(() => {
+    if(socket.current) { 
+        socket.current.on("status-recieve",(data)=> {
+          if(data.online === true) {
+            addOnlineUser(data);
+          };
+        });        
+    }
+
+  },[currentUser]);
+
+  function addOnlineUser (data) {
+    var users = onlineUsers;      
+    if(!users.includes(data.id)){
+      users.push(data.id)
+    }
+    setOnlineUsers([users]);
+  };
 
   useEffect(()=> {
     async function fetchData () {
@@ -59,6 +88,7 @@ function Chat() {
         contacts={contacts} 
         currentUser={currentUser} 
         changeChat={handleChatChange}
+        onlineUsers={onlineUsers}
         />
         {isLoaded && currentChat === undefined ? (
           <Welcome currentUser={currentUser} />
@@ -67,6 +97,7 @@ function Chat() {
             currentChat={currentChat} 
             currentUser={currentUser} 
             socket={socket}
+            onlineUsers={onlineUsers}
             />
         )}
       </div>

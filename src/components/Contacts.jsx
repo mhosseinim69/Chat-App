@@ -1,8 +1,9 @@
 import React,{ useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.png"
+import { AiFillCheckCircle } from "react-icons/ai";
 
-export default function Contacts({contacts, currentUser, changeChat}) {
+export default function Contacts({contacts, currentUser, changeChat, onlineUsers}) {
     const [currentUserName, setCurrentUserName] = useState(undefined);
     const [currentUserImage, setCurrentUserImage] = useState(undefined);
     const [currentSelected, setCurrentSelected] = useState(undefined);
@@ -39,20 +40,26 @@ export default function Contacts({contacts, currentUser, changeChat}) {
                                 <div className="username">
                                     <h3>{contact.username}</h3>
                                 </div>
+                                <div className={`${onlineUsers.length > 0 && onlineUsers[0].includes(contact._id) ? "online-icon":""}`}>
+                                        <AiFillCheckCircle />
+                                </div>
                             </div>    
                             );
                         })}
                 </div>
                 <div className="current-user">
-                <div className="avatar">
-                    <img 
-                    src={`data:image/svg+xml;base64,${currentUserImage}`} 
-                    alt="avatar" 
-                    />
-                </div>
-                <div className="username">
-                    <h2>{currentUserName}</h2>
-                </div>
+                    <div className="avatar">
+                        <img 
+                        src={`data:image/svg+xml;base64,${currentUserImage}`} 
+                        alt="avatar" 
+                        />
+                    </div>
+                    <div className="username">
+                        <h2>{currentUserName}</h2>
+                    </div>
+                    <div className="online-icon">
+                        <AiFillCheckCircle />
+                    </div>
                 </div>
             </Container>
         )
@@ -118,6 +125,12 @@ const Container = styled.div`
                 color: white;    
             }
         }
+        .online-icon {
+            svg {
+                font-size: 1.3rem;
+                color: #22E922;
+            }
+        }
     }
     .selected {
         background-color: #9186f3;
@@ -138,6 +151,12 @@ const Container = styled.div`
     .username {
         h2 {
             color: white;
+        }
+    }
+    .online-icon {
+        svg {
+            font-size: 1.3rem;
+            color: #22E922;
         }
     }
     @media screen and (min-width:720px) and (max-width:1080px){

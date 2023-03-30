@@ -6,9 +6,10 @@ import Logout from "./Logout";
 import axios from "axios";
 import { getAllMessagesRoute, sendMessageRoute } from "../utils/APIRoutes";
 import {v4 as uuidv4} from "uuid";
+import { AiFillCheckCircle } from "react-icons/ai";
 
 
-export default function ChatContainer ({ currentChat, currentUser, socket }) {
+export default function ChatContainer ({ currentChat, currentUser, socket, onlineUsers }) {
     const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const scrollRef = useRef();
@@ -76,6 +77,9 @@ export default function ChatContainer ({ currentChat, currentUser, socket }) {
                                 <div className="username">
                                     <h3>{currentChat.username}</h3>
                                 </div>
+                                <div className={`${onlineUsers.length > 0 && onlineUsers[0].includes(currentChat._id) ? "online-icon":""}`}>
+                                        <AiFillCheckCircle />
+                                </div>
                             </div>
                             <Logout />
                         </div>
@@ -130,7 +134,12 @@ const Container = styled.div`
                     color: white;
                 }
             }
-
+            .online-icon {
+                svg {
+                    font-size: 1.3rem;
+                    color: #22E922;
+                }
+            }
         }
     }
     .chat-messages {
