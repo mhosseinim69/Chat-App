@@ -7,7 +7,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { setAvatarRoute } from '../utils/APIRoutes';
 import {Buffer} from "buffer";
-
+import A from "../assets/1.png"
+import B from "../assets/2.png"
+import C from "../assets/3.png"
+import D from "../assets/4.png"
+import Default from "../assets/avatar.png"
 
 
 export default function SetAvatar() {
@@ -54,26 +58,28 @@ export default function SetAvatar() {
   
   useEffect(() => {
     async function fetchData () {
-      const data = [];
-      for(let i = 0; i < 4; i++) {
-      const image = await axios.get(
-        `${api}/${Math.round(Math.random() * 1000)}`
-      );
-      const buffer = new Buffer(image.data);
-      data.push(buffer.toString("base64"));
-    }
+    //   const data = [];
+    //   for(let i = 0; i < 4; i++) {
+    //   const image = await axios.get(
+    //     `${api}/${Math.round(Math.random() * 1000)}`
+    //   );
+    //   const buffer = new Buffer(image.data);
+    //   data.push(buffer.toString("base64"));
+    // }
+    const data = [Default, A, B, C, D ]
     setAvatars(data);
     setIsLoading(false);
   }
   fetchData ()
   }, []);
+  // {
+  //       isLoading ? <Container>
+  //         <img src={loader} alt="loader" className="loader" />
+  //       </Container> : (
 
   return (
      <>
-     {
-        isLoading ? <Container>
-          <img src={loader} alt="loader" className="loader" />
-        </Container> : (
+     
 
         
         <Container>
@@ -85,14 +91,15 @@ export default function SetAvatar() {
                 return (
                   <div
                     key={index} className={`avatar ${selectedAvatar === index ? "selected" : ""}`}>
-                    <img src={`data:image/svg+xml;base64,${avatar}`} alt="avatar" onClick={() => setSelectedAvatar(index)}/>
+                    <img src={avatar} alt="avatar" onClick={() => setSelectedAvatar(index)}/>
+                    {/* <img src={`data:image/svg+xml;base64,${avatar}`} alt="avatar" onClick={() => setSelectedAvatar(index)}/> */}
                   </div>
                 );
               })}
           </div>
           <button className="submit-btn" onClick={setProfilePicture}>Set as Profile Picture</button>
           </Container>
-          )}
+          
         <ToastContainer />
      </>  
     );

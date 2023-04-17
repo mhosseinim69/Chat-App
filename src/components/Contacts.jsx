@@ -33,7 +33,7 @@ export default function Contacts({contacts, currentUser, changeChat, onlineUsers
                                key={index} onClick={()=>changeCurrentChat(index, contact)}>
                                 <div className="avatar">
                                     <img 
-                                    src={`data:image/svg+xml;base64,${contact.avatarImage}`} 
+                                    src={contact.avatarImage} 
                                     alt="avatar" 
                                     />
                                 </div>
@@ -50,7 +50,7 @@ export default function Contacts({contacts, currentUser, changeChat, onlineUsers
                 <div className="current-user">
                     <div className="avatar">
                         <img 
-                        src={`data:image/svg+xml;base64,${currentUserImage}`} 
+                        src={currentUserImage} 
                         alt="avatar" 
                         />
                     </div>
