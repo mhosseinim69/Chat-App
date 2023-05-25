@@ -81,7 +81,7 @@ export default function ChatContainer ({ currentChat, currentUser, socket, chang
                                         <AiFillCheckCircle />
                                 </div>
                             </div>
-                            <Logout />
+                            <Logout changeUserStatus={changeUserStatus}/>
                         </div>
                         <div className="chat-messages">
                             {messages.map((message) => {
