@@ -3,20 +3,23 @@ import styled from "styled-components";
 import Logo from "../assets/logo.png"
 import { AiFillCheckCircle } from "react-icons/ai";
 
-export default function Contacts({contacts, currentUser, changeChat, onlineUsers}) {
+export default function Contacts({contacts, currentUser, changeChat}) {
     const [currentUserName, setCurrentUserName] = useState(undefined);
     const [currentUserImage, setCurrentUserImage] = useState(undefined);
     const [currentSelected, setCurrentSelected] = useState(undefined);
+
     useEffect (() => {
         if(currentUser) {
             setCurrentUserImage(currentUser.avatarImage);
             setCurrentUserName(currentUser.username); 
         }
     }, [currentUser]);
+
     const changeCurrentChat = (index, contact) => {
         setCurrentSelected(index);
         changeChat(contact);
     };
+
     return (
     <>
     {currentUserImage && currentUserName && (
@@ -40,7 +43,7 @@ export default function Contacts({contacts, currentUser, changeChat, onlineUsers
                                 <div className="username">
                                     <h3>{contact.username}</h3>
                                 </div>
-                                <div className={`${onlineUsers.length > 0 && onlineUsers[0].includes(contact._id) ? "online-icon":""}`}>
+                                <div className={`${contact.userOnline ? "online-icon":""}` }>
                                         <AiFillCheckCircle />
                                 </div>
                             </div>    

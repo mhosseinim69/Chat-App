@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-// import axios from "axios";
 import { BiPowerOff } from "react-icons/bi";
 
 
-export default function Logout() {
+export default function Logout({changeUserStatus}) {
     const navigate = useNavigate();
     const handleClick = async () => {
+        await changeUserStatus();
         localStorage.clear();
         navigate("/login");
     };

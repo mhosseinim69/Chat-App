@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"
-import { allUsersRoute, host } from '../utils/APIRoutes';
+import { allUsersRoute, host, statusRoute } from '../utils/APIRoutes';
 import Contacts from '../components/Contacts';
 import Welcome from '../components/Welcome';
 import ChatContainer from '../components/ChatContainer';
@@ -15,7 +15,14 @@ function Chat() {
   const [currentUser, setCurrentUser] = useState(undefined);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [isLoaded, setisLoaded] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', changeUserStatus);
+    return () => {
+      window.removeEventListener('beforeunload', changeUserStatus);
+    };
+  }, [currentUser]);
+
 
   useEffect(() => {
     async function fetchData () {
@@ -36,33 +43,66 @@ function Chat() {
     }
   },[currentUser])
 
-  useEffect(() => {
-    if(currentUser) {
-      socket.current.emit("send-status", {
-        id: currentUser._id,
-        online: true,
-    });
-    }
-  },[currentUser]);
+  useEffect (()=> { 
+    async function fetchData () {
+      if (currentUser) {
+        await socket.current.emit("send-status", {
+          id: currentUser._id,
+          online: true,
+        });
+        axios.post(statusRoute, {
+          id: currentUser._id,
+          online: true,
+        });
+      }
+  }
+  fetchData ()
+  },[currentUser])
 
+  
   useEffect(() => {
-    if(socket.current) { 
+    if(socket.current) {
         socket.current.on("status-recieve",(data)=> {
-          if(data.online === true) {
-            addOnlineUser(data);
-          };
-        });        
+          const updateContact = contacts.map(contact => {
+            if (data.online === true && contacts.find(contact => contact._id === data.id)) {
+              contacts.find(contact => contact._id === data.id).userOnline=true;
+            }
+            return contact
+          })
+          setContacts(updateContact)
+        });          
     }
+  },);
 
-  },[currentUser]);
 
-  function addOnlineUser (data) {
-    var users = onlineUsers;      
-    if(!users.includes(data.id)){
-      users.push(data.id)
+  const changeUserStatus = useCallback (() => {
+    async function fetchData () {
+    await socket.current.emit("send-status", {
+      id: currentUser._id,
+      online: false,
+  });
+    axios.post(statusRoute, {
+      id: currentUser._id,
+      online: false,
+  });
+}
+  fetchData ()
+  })
+
+
+  useEffect(() => {
+    if(socket.current) {
+        socket.current.on("status-recieve",(data)=> {
+          const updateContact = contacts.map(contact => {
+            if (data.online === false && contacts.find(contact => contact._id === data.id)) {
+              contacts.find(contact => contact._id === data.id).userOnline=false;
+            }
+            return contact
+          })
+          setContacts(updateContact)
+        });          
     }
-    setOnlineUsers([users]);
-  };
+  },);
 
   useEffect(()=> {
     async function fetchData () {
@@ -88,7 +128,6 @@ function Chat() {
         contacts={contacts} 
         currentUser={currentUser} 
         changeChat={handleChatChange}
-        onlineUsers={onlineUsers}
         />
         {isLoaded && currentChat === undefined ? (
           <Welcome currentUser={currentUser} />
@@ -97,7 +136,7 @@ function Chat() {
             currentChat={currentChat} 
             currentUser={currentUser} 
             socket={socket}
-            onlineUsers={onlineUsers}
+            changeUserStatus={changeUserStatus}
             />
         )}
       </div>

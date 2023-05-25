@@ -2,17 +2,17 @@ import React,{ useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
 import Logout from "./Logout";
-
 import axios from "axios";
 import { getAllMessagesRoute, sendMessageRoute } from "../utils/APIRoutes";
 import {v4 as uuidv4} from "uuid";
 import { AiFillCheckCircle } from "react-icons/ai";
 
 
-export default function ChatContainer ({ currentChat, currentUser, socket, onlineUsers }) {
+export default function ChatContainer ({ currentChat, currentUser, socket, changeUserStatus }) {
     const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const scrollRef = useRef();
+
     useEffect(()=> {
         async function fetchData () {
             if(currentChat){
@@ -77,7 +77,7 @@ export default function ChatContainer ({ currentChat, currentUser, socket, onlin
                                 <div className="username">
                                     <h3>{currentChat.username}</h3>
                                 </div>
-                                <div className={`${onlineUsers.length > 0 && onlineUsers[0].includes(currentChat._id) ? "online-icon":""}`}>
+                                <div className={`${currentChat.userOnline ? "online-icon":""}`}>
                                         <AiFillCheckCircle />
                                 </div>
                             </div>
